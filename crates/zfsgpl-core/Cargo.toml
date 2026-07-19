@@ -1,0 +1,14 @@
+[package]
+name = "zfsgpl-core"
+description = "Pool, vdev, DMU, DSL, and ZPL logic for zfs-gpl"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+zfsgpl-ondisk = { path = "../zfsgpl-ondisk" }

@@ -1,0 +1,19 @@
+[package]
+name = "zfsgpl-cli"
+description = "Command-line tools for zfs-gpl"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+# Deliberately not named `zpool`/`zfs`, so an OpenZFS install can coexist.
+[[bin]]
+name = "zgpl"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+zfsgpl-core = { path = "../zfsgpl-core" }

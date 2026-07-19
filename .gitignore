@@ -1,0 +1,10 @@
+/target
+**/*.rs.bk
+*.swp
+*.orig
+
+# defensive: nothing from the reference/dirty tree may ever land here
+/openzfs/
+/reference-source/
+**/opensolaris/
+**/*.cddl
