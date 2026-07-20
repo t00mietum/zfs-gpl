@@ -80,6 +80,17 @@ Both must live on one system without stepping on each other. So:
 - GPL-2.0-or-later, no CDDL code, ever. Independent-creation evidence is maintained continuously (cleanroom.md).
 - Patents are a separate risk that clean-room does not address, tracked in `legal/patent-fto.md`, and are for counsel. Going pure-GPL forfeits the CDDL patent grant; that trade-off is accepted deliberately and noted for review.
 
+### Patent-aware build order
+
+Clean-room addresses copyright, not patents. To keep patent exposure low without stalling development, we decided to sequence the roadmap by patent status:
+
+- Features whose relevant patents are expired (or that no patent covers) are built first: the foundational format mechanics - core read/write, pooled storage and dynamic striping, integrity checksums, endianness handling.
+- Features that may still be covered are deferred and, until any applicable patent expires, exist as stubs only: enough inert code for the working stack to compile and run.
+- A stub may carry the design as comment-only pseudocode - plain English at any level of detail, up to a full step-by-step that later becomes a real implementation over days or weeks. As comments it is unexecutable text, not a machine or a method that runs.
+- No patent-covered logic is ever compiled or executed - not in releases, tests, or dev builds. A stub does not practice a claim; pseudocode in a comment is not code.
+- A stub is promoted to a real implementation only once its patents have lapsed, or counsel clears it.
+- Build order therefore tracks patent expiry, which shapes the phased roadmap. The public-facing form of this commitment is the README "Patents" section; the working patent inventory is kept in private notes, pending counsel's formal freedom-to-operate opinion.
+
 ## Plan
 
 Format coverage strategy:
@@ -87,6 +98,7 @@ Format coverage strategy:
 - The durable core (labels, uberblock, block pointers, DMU/DSL/ZAP/ZPL) is specified in the published 2006 document and can be implemented directly from it.
 - Everything post-2006 (feature flags, native encryption, dRAID, zstd, log spacemaps, large dnodes and blocks) is documented only in CDDL source, so it comes through the clean-room spec pipeline. This is the bulk of the modern format and the main schedule risk.
 - Read support is the near-term target; write support is greenfield everywhere (no independent project has done it) and is the harder, later phase.
+- Build order also tracks patent status (see Patent-aware build order): unencumbered format mechanics first; features that may still be covered (self-heal, ditto blocks, resilver, per-dataset redundancy, snapshots/clones, scrub, encryption, secure erase) stay stub-only until their patents lapse.
 
 Phased roadmap and current status are in [`backlog.md`](backlog.md).
 

@@ -51,6 +51,7 @@ An independent, clean-room reimplementation of the ZFS filesystem in Rust, licen
 <!-- TOC -->
 
 - [Why](#why)
+- [Patents](#patents)
 - [Features](#features)
 - [Installing](#installing)
 - [Building from source](#building-from-source)
@@ -71,6 +72,42 @@ Because the point of the relicense is that the code is genuinely not derived fro
 The full rules and rationale - including a candid treatment of the questions AI-assisted development raises for clean rooms - are in [`cleanroom.md`](cleanroom.md); provenance is in [`provenance.md`](provenance.md). Contributors read [`contributing.md`](contributing.md) first.
 
 Status: pre-alpha. Nothing works yet. This tree currently holds the workspace skeleton, the design, and the clean-room process that governs how the code may be written.
+
+## Patents
+
+The clean room proves this code was not copied. It says nothing about patents: you can infringe a patent you have never seen, having written every line yourself. Patents are therefore handled as a separate, deliberate commitment - a public contract for how this project behaves.
+
+None of this is legal advice. These are good-faith engineering commitments, made while we await a formal freedom-to-operate opinion from qualified patent counsel. The way features are grouped below is our current belief, not a legal conclusion, and is subject to that written opinion.
+
+Our commitments - we will not break these:
+
+- We ship working code only for features we believe are covered by no unexpired patent.
+- Any feature that might still be covered is implemented as a stub only: just enough inert code for the working features to compile and run against it. A stub does nothing.
+- A stub may carry pseudocode in its comments - plain-English design, of any level of detail, up to a full step-by-step that a person could later turn into real code over days or weeks. As comments it is just English: unexecutable, not a machine, and not a method that runs.
+- That pseudocode is made real only once any applicable patents have expired.
+- Under no circumstances is patent-covered logic ever compiled into a binary or executed - not in releases, not in tests, not on a developer's machine. Comments are not code; a stub does not practice a claim.
+- We are waiting on formal patent research to establish which patents apply and when each expires. Until then we err toward treating a feature as covered.
+- When a patent lapses (or counsel clears it), its stub is promoted to a real implementation - openly, in git history.
+
+Features we currently believe are clear - foundational format mechanics whose relevant patents we believe have expired, subject to the opinion above:
+
+- Reading and writing the core on-disk format.
+- Pooled storage across multiple devices, with dynamic striping.
+- End-to-end data-integrity checksums (the hash-tree structure over blocks).
+- Byte-order (endianness) adaptivity.
+
+Features we treat as possibly still covered - implemented as stubs until confirmed clear or expired:
+
+- Self-healing (automatic repair from redundant copies).
+- Redundant metadata copies ("ditto" blocks).
+- Rebuild and resilvering of redundant devices.
+- Per-dataset redundancy policies (RAID-Z-style redundancy levels).
+- Snapshots and clones.
+- Background integrity scrub.
+- Native encryption.
+- Secure erase within a copy-on-write file system.
+
+This list is intentionally high-level and names no patents; the detailed analysis is kept in private working notes and will be superseded by counsel's formal opinion. The point of this section is the commitment, not the citations.
 
 ## Features
 
