@@ -1,6 +1,6 @@
 # Provenance
 
-This file records where the code in this repository comes from, so that its independence from CDDL-licensed ZFS source is documented rather than merely asserted. It is the public-facing summary; the working process that backs it up is in [`CLEANROOM.md`](CLEANROOM.md).
+This file records where the code in this repository comes from, so that its independence from CDDL-licensed ZFS source is documented rather than merely asserted. It is the public-facing summary; the working process that backs it up is in [`cleanroom.md`](cleanroom.md).
 
 ## Statement of independent creation
 
@@ -9,13 +9,13 @@ zfs-gpl is an original work. It shares no source code with OpenZFS, illumos, Ope
 - The published *ZFS On-Disk Format* specification (Sun Microsystems, 2006), a document, not source code. It covers the durable core: vdev labels, the uberblock, block pointers and DVAs, the DMU object model, the DSL, the ZAP, and the ZPL.
 - Public, non-source documentation: OpenZFS man pages (notably `zpool-features(7)`), the OpenZFS docs site, academic and forensic papers on the format.
 - Behavioral observation: creating pools with a stock OpenZFS install and observing the resulting on-disk bytes and import/read behavior as a black box (an external oracle), without reading OpenZFS source.
-- For format features introduced after 2006 that are documented only in CDDL source (feature flags, native encryption, dRAID, zstd, log spacemaps, large dnodes and blocks), functional specifications produced under the clean-room process in [`CLEANROOM.md`](CLEANROOM.md): a separate role studies the source and writes fact-only specifications; this implementation is written from those specifications, never from the source.
+- For format features introduced after 2006 that are documented only in CDDL source (feature flags, native encryption, dRAID, zstd, log spacemaps, large dnodes and blocks), functional specifications produced under the clean-room process in [`cleanroom.md`](cleanroom.md): a separate role studies the source and writes fact-only specifications; this implementation is written from those specifications, never from the source.
 
 ## What is deliberately absent
 
 - No file copied or adapted from any CDDL-licensed tree.
 - No OpenZFS `AUTHORS`, comments, identifier schemes, or CDDL headers.
-- No OpenZFS test-suite source. Conformance is checked with independently authored tests and by round-tripping against a stock OpenZFS binary as an external oracle. See [`CLEANROOM.md`](CLEANROOM.md) on tests.
+- No OpenZFS test-suite source. Conformance is checked with independently authored tests and by round-tripping against a stock OpenZFS binary as an external oracle. See [`cleanroom.md`](cleanroom.md) on tests.
 
 ## The two open questions this does not resolve
 

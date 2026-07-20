@@ -3,7 +3,7 @@
 
 Thanks for taking the time to contribute.
 
-Before anything else: this project's value depends on staying clean-room. Read [`CLEANROOM.md`](CLEANROOM.md) and take it literally. A single tainted contribution can force a file back to CDDL and break the GPL relicense for that file, so the bar is not "don't copy code" but "don't let CDDL expression into your head and then into the tree."
+Before anything else: this project's value depends on staying clean-room. Read [`cleanroom.md`](cleanroom.md) and take it literally. A single tainted contribution can force a file back to CDDL and break the GPL relicense for that file, so the bar is not "don't copy code" but "don't let CDDL expression into your head and then into the tree."
 
 <!-- omit in toc -->
 ## Table of Contents
@@ -25,7 +25,7 @@ If you have read OpenZFS (or any CDDL ZFS) source, you may not write implementat
 - **Spec side** may read the source and writes only functional specifications (facts, formats, behaviors) into the spec repo. Never implementation code.
 - **Implementation side** works in this repo, from the spec only, and never opens OpenZFS source.
 
-Pick one per feature area and stay on that side. Details and the legal basis are in [`CLEANROOM.md`](CLEANROOM.md).
+Pick one per feature area and stay on that side. Details and the legal basis are in [`cleanroom.md`](cleanroom.md).
 
 What not to bring in:
 

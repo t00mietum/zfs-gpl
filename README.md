@@ -62,7 +62,7 @@ An independent, clean-room reimplementation of the ZFS filesystem in Rust, licen
 
 OpenZFS is CDDL, which is incompatible with GPLv2 and is the reason ZFS has never shipped in the mainline Linux kernel tree. This project shares **no** code with OpenZFS. It is an independent work built from the published on-disk format and behavioral observation, licensed GPL-2.0-or-later.
 
-Because the point of the relicense is that the code is genuinely not derived from CDDL source, the project runs a strict two-role separation: one side may study OpenZFS and writes only functional specifications; the other side implements from those specifications and never sees the source. The rules, and why they exist, are in [`CLEANROOM.md`](CLEANROOM.md); provenance is in [`PROVENANCE.md`](PROVENANCE.md). Contributors read [`contributing.md`](contributing.md) first.
+Because the point of the relicense is that the code is genuinely not derived from CDDL source, the project runs a strict two-role separation: one side may study OpenZFS and writes only functional specifications; the other side implements from those specifications and never sees the source. The rules, and why they exist, are in [`cleanroom.md`](cleanroom.md); provenance is in [`provenance.md`](provenance.md). Contributors read [`contributing.md`](contributing.md) first.
 
 Status: pre-alpha. Nothing works yet. This tree currently holds the workspace skeleton, the design, and the clean-room process that governs how the code may be written.
 

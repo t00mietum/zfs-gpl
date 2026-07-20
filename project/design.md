@@ -5,7 +5,7 @@
 <!-- markdownlint-disable MD041 -- First line in a file should be a top-level heading -->
 # Design
 
-Design, requirements, and direction. The active pre-v1.0.0 bug/feature task list lives in [`backlog.md`](backlog.md). Process and legal detail live in [`../CLEANROOM.md`](../CLEANROOM.md), [`../PROVENANCE.md`](../PROVENANCE.md), and [`legal/patent-fto.md`](legal/patent-fto.md).
+Design, requirements, and direction. The active pre-v1.0.0 bug/feature task list lives in [`backlog.md`](backlog.md). Process and legal detail live in [`../cleanroom.md`](../cleanroom.md), [`../provenance.md`](../provenance.md), and [`legal/patent-fto.md`](legal/patent-fto.md).
 
 A clean-room, from-scratch reimplementation of ZFS in Rust, licensed GPL-2.0-or-later, that reads and writes the OpenZFS on-disk format.
 
@@ -77,7 +77,7 @@ Both must live on one system without stepping on each other. So:
 
 ### Licensing and legal posture
 
-- GPL-2.0-or-later, no CDDL code, ever. Independent-creation evidence is maintained continuously (CLEANROOM.md).
+- GPL-2.0-or-later, no CDDL code, ever. Independent-creation evidence is maintained continuously (cleanroom.md).
 - Patents are a separate risk that clean-room does not address, tracked in `legal/patent-fto.md`, and are for counsel. Going pure-GPL forfeits the CDDL patent grant; that trade-off is accepted deliberately and noted for review.
 
 ## Plan
