@@ -1,33 +1,99 @@
-# zfs-gpl
+<!-- markdownlint-disable MD007 -- Unordered list indentation -->
+<!-- markdownlint-disable MD010 -- No hard tabs -->
+<!-- markdownlint-disable MD033 -- No inline html -->
+<!-- markdownlint-disable MD055 -- Table pipe style [Expected: leading_and_trailing; Actual: leading_only; Missing trailing pipe] -->
+<!-- markdownlint-disable MD041 -- First line in a file should be a top-level heading -->
+<div align="center">
 
-An independent, clean-room reimplementation of the ZFS filesystem in Rust, licensed **GPL-2.0-or-later**.
+[![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+![Lifecycle: Pre-alpha](https://img.shields.io/badge/Lifecycle-Pre--alpha-red)
+![Made with Rust](https://img.shields.io/badge/Made%20with-Rust-1f425f.svg)
 
-The goal is a from-scratch ZFS that reads and writes the same on-disk format as OpenZFS, so the two can coexist on one machine, while shedding some of OpenZFS's design constraints (its own ARC in place of native OS caching, reliance on a cache file for device discovery, and the CDDL licensing that keeps it out of the mainline kernel).
+</div>
+<!--
+[![!#/bin/bash](https://img.shields.io/badge/-%23!%2Fbin%2Fbash-1f425f.svg?logo=gnu-bash)](https://www.gnu.org/software/bash/)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![made-with-rust](https://img.shields.io/badge/Made%20with-Rust-1f425f.svg)](https://www.rust-lang.org/)
+![Go](https://img.shields.io/badge/Go-00ADD8?logo=go&logoColor=white)
+![Made with](https://img.shields.io/badge/Made%20with-C%2B%2B-brightgreen?style=plastic)
+![Made with](https://img.shields.io/badge/Made%20with-Unreal%20Engine-critical?style=plastic)
+[![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-1f425f.svg)](https://www.javascript.com)
+![License: GPL v2](https://img.shields.io/badge/License-GPLv2-blue.svg)
+[![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
+![Lifecycle: Alpha](https://img.shields.io/badge/Lifecycle-Alpha-orange)
+![Lifecycle: Beta](https://img.shields.io/badge/Lifecycle-Beta-yellow)
+![Lifecycle: RC](https://img.shields.io/badge/Lifecycle-RC-blue)
+![Lifecycle: Stable](https://img.shields.io/badge/Lifecycle-Stable-brightgreen)
+![Lifecycle: Deprecated](https://img.shields.io/badge/Lifecycle-Deprecated-red)
+![Status: Deprecated](https://img.shields.io/badge/Status-Deprecated-orange)
+![Status: Archived](https://img.shields.io/badge/Status-Archived-lightgrey)
+![Lifecycle: EOL](https://img.shields.io/badge/Lifecycle-EOL-lightgrey)
+![Coverage](https://img.shields.io/badge/Coverage-25%25-red)
+![Coverage](https://img.shields.io/badge/Coverage-50%25-orange)
+![Coverage](https://img.shields.io/badge/Coverage-75%25-yellow)
+![Coverage](https://img.shields.io/badge/Coverage-90%25-brightgreen)
+![Status: Passing](https://img.shields.io/badge/Status-Passing-brightgreen)
+![Status: Failing](https://img.shields.io/badge/Status-Failing-red)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/t00mietum?logo=GitHub%20Sponsors&style=social)](https://github.com/sponsors/t00mietum)
+-->
 
-## Status
+<!-- TOC ignore:true -->
+# ZFS-GPL
 
-Pre-alpha. Nothing works yet. This tree currently holds the workspace skeleton, the design, and the clean-room process that governs how the code may be written.
+An independent, clean-room reimplementation of the ZFS filesystem in Rust, licensed **GPL-2.0-or-later**. It reads and writes the same on-disk format as OpenZFS, so the two can coexist on one machine, while shedding some of OpenZFS's design constraints.
 
-## Why "GPL"
+<!-- TOC ignore:true -->
+## Table of contents
 
-OpenZFS is CDDL, which is incompatible with GPLv2 and is the reason ZFS has never shipped in the Linux kernel tree. This project shares **no** code with OpenZFS. It is an independent work built from the published on-disk format and behavioral observation, and is licensed GPL-2.0-or-later. See [`PROVENANCE.md`](PROVENANCE.md).
+<!-- TOC -->
 
-## Clean-room
+- [Why](#why)
+- [Features](#features)
+- [Installing](#installing)
+- [Building from source](#building-from-source)
+- [Copyright and license](#copyright-and-license)
 
-Because the point of the relicense is that the code is genuinely not derived from CDDL source, the project runs a strict two-role separation: one side may study OpenZFS and writes only functional specifications; the other side implements from those specifications and never sees the source. The rules, and why they exist, are in [`CLEANROOM.md`](CLEANROOM.md). Contributors must read [`CONTRIBUTING.md`](CONTRIBUTING.md) first.
+<!-- /TOC -->
 
-## Design
+## Why
 
-- On-disk compatible with OpenZFS, targeting one prior stable minor release or three months, whichever is longer.
-- Version naming follows OpenZFS.
-- Coexists with an installed OpenZFS: distinct binary and module names, no shared device paths or state files.
+OpenZFS is CDDL, which is incompatible with GPLv2 and is the reason ZFS has never shipped in the mainline Linux kernel tree. This project shares **no** code with OpenZFS. It is an independent work built from the published on-disk format and behavioral observation, licensed GPL-2.0-or-later.
+
+Because the point of the relicense is that the code is genuinely not derived from CDDL source, the project runs a strict two-role separation: one side may study OpenZFS and writes only functional specifications; the other side implements from those specifications and never sees the source. The rules, and why they exist, are in [`CLEANROOM.md`](CLEANROOM.md); provenance is in [`PROVENANCE.md`](PROVENANCE.md). Contributors read [`contributing.md`](contributing.md) first.
+
+Status: pre-alpha. Nothing works yet. This tree currently holds the workspace skeleton, the design, and the clean-room process that governs how the code may be written.
+
+## Features
+
+- On-disk compatible with OpenZFS, both directions, targeting one prior stable minor release or three months, whichever is longer. Version naming follows OpenZFS.
+- Coexists with an installed OpenZFS: distinct binary and module names (`zgpl`, not `zpool`/`zfs`), no shared device paths or state files.
 - Native OS page cache instead of a reimplemented ARC.
 - Device discovery by native enumeration and label scan, not a cache file.
 
 Full design in [`project/design.md`](project/design.md); roadmap in [`project/backlog.md`](project/backlog.md).
 
-## License
+## Installing
 
-GPL-2.0-or-later. See [`LICENSE`](LICENSE).
+Nothing to install yet (pre-alpha).
 
-This is not legal advice; the clean-room and patent notes in this repo are an engineering process, and are pending review by counsel.
+## Building from source
+
+Rust workspace at the repository root:
+
+	cargo build --release        # binary: zgpl
+	cargo test
+	cargo fmt --all
+
+The published 2006 on-disk spec is consumed as a git submodule at `spec/`. After cloning:
+
+	git submodule update --init
+
+## Copyright and license
+
+> Copyright © 2026 t00mietum (ID: f⍒Ê🝅ĜᛎỹqFẅ▿⍢Ŷ‡ʬẼᛏ🜣)<br>
+> Licensed under [GNU GPL v2 Or Later License](https://spdx.org/licenses/GPL-2.0-or-later.html) license. No warranty. See [`license.md`](license.md).
+
+This is not legal advice; the clean-room and patent notes in this repo are an engineering process, pending review by counsel.
