@@ -76,7 +76,7 @@ In each section, items are listed approximately from newest to oldest.
 - ✅ Request channel: `requests.md` in the spec repo - questions in, approved specs out, all logged in git
 - ✅ Evidence retention: transcript retention raised, daily append-only archive with SHA-256 manifest under `private/` (outside this repo)
 - 🔘 Similarity audit script (spec-side): lexical harvest (identifiers/strings/comments/constants) of this repo vs pinned source, allowlist from approved specs, results to the gatekeeper log
-- 🔘 Freedom-to-operate patent search on Sun/Oracle ZFS patents and third-party filesystem patents (counsel-led); record in `legal/patent-fto.md`
+- 🛠️ Freedom-to-operate patent search on Sun/Oracle ZFS patents and third-party filesystem patents (counsel-led); record in `legal/patent-fto.md`. Preliminary bibliographic inventory done 2026-07-20 (live vs expired, real dates); counsel-led claim reads + two gaps (RAID-Z parity, foundational COW grant) still open
 - 🔘 Counsel review of cleanroom.md (incl. the shared-model section) and the CDDL-patent-grant trade-off
 - 🔘 Confirm the published 2006 spec is the format-of-record for the pre-2006 core, and catalogue what it does and does not cover
 - ✅ Stand up the spec pipeline: dirty-side analysis -> gatekeeper review -> spec repo, with the evidence trail (first spec: label+uberblock, `7f86d1b`)
