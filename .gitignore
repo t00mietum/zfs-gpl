@@ -8,3 +8,6 @@
 /reference-source/
 **/opensolaris/
 **/*.cddl
+
+# local Claude working files (memory, local settings); live outside the repo, never commit
+/.claude/
