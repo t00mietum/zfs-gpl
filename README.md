@@ -62,7 +62,13 @@ An independent, clean-room reimplementation of the ZFS filesystem in Rust, licen
 
 OpenZFS is CDDL, which is incompatible with GPLv2 and is the reason ZFS has never shipped in the mainline Linux kernel tree. This project shares **no** code with OpenZFS. It is an independent work built from the published on-disk format and behavioral observation, licensed GPL-2.0-or-later.
 
-Because the point of the relicense is that the code is genuinely not derived from CDDL source, the project runs a strict two-role separation: one side may study OpenZFS and writes only functional specifications; the other side implements from those specifications and never sees the source. The rules, and why they exist, are in [`cleanroom.md`](cleanroom.md); provenance is in [`provenance.md`](provenance.md). Contributors read [`contributing.md`](contributing.md) first.
+Because the point of the relicense is that the code is genuinely not derived from CDDL source, development runs as a formal clean room:
+
+- **Two roles, physically separated.** A spec side may study OpenZFS and writes only fact-only functional specifications; the implementation side works from approved specifications and never sees the source. The two sides run on isolated systems with no network or filesystem path between them.
+- **One crossing point, logged.** Specifications flow in through a gatekept, commit-pinned spec repo ([`zfs-gpl-spec`](https://github.com/t00mietum/zfs-gpl-spec)); questions flow back only through a written request channel in that repo. Nothing else crosses, in either direction, and both directions live permanently in git history.
+- **Measured, not just promised.** A recurring spec-side audit compares this tree against the OpenZFS corpus (identifiers, string literals, comments, constant tables) so non-copying is demonstrated rather than merely asserted, and working transcripts are retained in append-only, hash-manifested archives.
+
+The full rules and rationale - including a candid treatment of the questions AI-assisted development raises for clean rooms - are in [`cleanroom.md`](cleanroom.md); provenance is in [`provenance.md`](provenance.md). Contributors read [`contributing.md`](contributing.md) first.
 
 Status: pre-alpha. Nothing works yet. This tree currently holds the workspace skeleton, the design, and the clean-room process that governs how the code may be written.
 
@@ -87,7 +93,7 @@ Rust workspace at the repository root:
 	cargo test
 	cargo fmt --all
 
-The published 2006 on-disk spec is consumed as a git submodule at `spec/`. After cloning:
+The approved format specifications ([`zfs-gpl-spec`](https://github.com/t00mietum/zfs-gpl-spec)) are consumed as a git submodule at `spec/`, pinned by commit. After cloning:
 
 	git submodule update --init
 
