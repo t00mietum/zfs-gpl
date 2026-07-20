@@ -65,13 +65,19 @@ In each section, items are listed approximately from newest to oldest.
 	- ✅ Rust workspace (`zfsgpl-ondisk`, `zfsgpl-core`, `zfsgpl-cli`)
 	- ✅ Design and backlog docs
 	- ✅ Set up the spec repo (`zfs-gpl-spec`) and wire the dirty tree with its own role-constraining context (`DIRTY-SIDE.md`, openzfs pinned)
-	- 🔘 CI: build, test, fmt, clippy; add the clone-detection tripwire against the OpenZFS corpus
+	- 🔘 CI: build, test, fmt, clippy (the clone-detection tripwire runs spec-side, not here - see Phase 1)
 	- 🔘 rustfmt/clippy pre-commit hook
 
 ### Phase 1 - legal groundwork (parallel, some for counsel)
 
+- 🛠️ Physical wall: isolated spec environment on a separate system (no network/filesystem path to this one), with its own agent installation, instructions, memory, and settings
+	- Dirty tree and spec working tree move there; no OpenZFS source copy remains on the implementation system
+- ✅ Clean-room process v2: physical wall, single crossing point + request channel, similarity audit, evidence retention, shared-model section (`cleanroom.md`)
+- ✅ Request channel: `requests.md` in the spec repo - questions in, approved specs out, all logged in git
+- ✅ Evidence retention: transcript retention raised, daily append-only archive with SHA-256 manifest under `private/` (outside this repo)
+- 🔘 Similarity audit script (spec-side): lexical harvest (identifiers/strings/comments/constants) of this repo vs pinned source, allowlist from approved specs, results to the gatekeeper log
 - 🔘 Freedom-to-operate patent search on Sun/Oracle ZFS patents and third-party filesystem patents (counsel-led); record in `legal/patent-fto.md`
-- 🔘 Counsel review of cleanroom.md and the CDDL-patent-grant trade-off
+- 🔘 Counsel review of cleanroom.md (incl. the shared-model section) and the CDDL-patent-grant trade-off
 - 🔘 Confirm the published 2006 spec is the format-of-record for the pre-2006 core, and catalogue what it does and does not cover
 - ✅ Stand up the spec pipeline: dirty-side analysis -> gatekeeper review -> spec repo, with the evidence trail (first spec: label+uberblock, `7f86d1b`)
 
