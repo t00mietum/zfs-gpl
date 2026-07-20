@@ -6,7 +6,7 @@ This is an independent, clean-room implementation of the ZFS on-disk format.
 It is NOT derived from, and contains no code from, OpenZFS, illumos, OpenSolaris,
 or any other CDDL-licensed source. Format compatibility was obtained from the
 published ZFS on-disk format specification, public documentation, and black-box
-observation of interoperability. See PROVENANCE.md and CLEANROOM.md.
+observation of interoperability. See provenance.md and cleanroom.md.
 
 "ZFS" is used here only to name the on-disk format this software interoperates
 with. No affiliation with or endorsement by Oracle or the OpenZFS project is

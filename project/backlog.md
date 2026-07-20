@@ -5,7 +5,7 @@
 <!-- markdownlint-disable MD041 -- First line in a file should be a top-level heading -->
 # Requirements
 
-This is a product backlog just for the pre-v1.0.0 release. After that, bugs, features, and enhancements will be managed in GitHub Issues. Companion: [`design.md`](design.md). Process: [`../CLEANROOM.md`](../CLEANROOM.md).
+This is a product backlog just for the pre-v1.0.0 release. After that, bugs, features, and enhancements will be managed in GitHub Issues. Companion: [`design.md`](design.md). Process: [`../cleanroom.md`](../cleanroom.md).
 
 <!-- TOC ignore:true -->
 ## Table of contents
@@ -60,8 +60,8 @@ In each section, items are listed approximately from newest to oldest.
 ### Phase 0 - foundation
 
 - 🛠️ Repo, license, provenance, clean-room process, workspace skeleton
-	- ✅ GPL-2.0-or-later license, NOTICE, PROVENANCE, contributing
-	- ✅ CLEANROOM process document
+	- ✅ GPL-2.0-or-later license, notice, provenance, contributing
+	- ✅ clean-room process document
 	- ✅ Rust workspace (`zfsgpl-ondisk`, `zfsgpl-core`, `zfsgpl-cli`)
 	- ✅ Design and backlog docs
 	- ✅ Set up the spec repo (`zfs-gpl-spec`) and wire the dirty tree with its own role-constraining context (`DIRTY-SIDE.md`, openzfs pinned)
@@ -71,7 +71,7 @@ In each section, items are listed approximately from newest to oldest.
 ### Phase 1 - legal groundwork (parallel, some for counsel)
 
 - 🔘 Freedom-to-operate patent search on Sun/Oracle ZFS patents and third-party filesystem patents (counsel-led); record in `legal/patent-fto.md`
-- 🔘 Counsel review of CLEANROOM.md and the CDDL-patent-grant trade-off
+- 🔘 Counsel review of cleanroom.md and the CDDL-patent-grant trade-off
 - 🔘 Confirm the published 2006 spec is the format-of-record for the pre-2006 core, and catalogue what it does and does not cover
 - ✅ Stand up the spec pipeline: dirty-side analysis -> gatekeeper review -> spec repo, with the evidence trail (first spec: label+uberblock, `7f86d1b`)
 
