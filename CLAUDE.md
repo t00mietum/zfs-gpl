@@ -16,7 +16,7 @@ This is a clean-room GPLv2+ reimplementation of ZFS. This context is the IMPLEME
 - Claude is the sole code contributor; the owner contributes documentation and backlog edits under their own identity.
 - Author commits as `Claude <claude@bubblesnet.com>` (set repo-local in both repos). Trailers on every Claude commit: `Model:` (exact id), `Effort:`, `Instance:` - here always `Instance: zfs-gpl-implementation` (spec environment uses `zfs-gpl-spec`) - and `Co-Authored-By: Claude <noreply@anthropic.com>` (that linked email is what makes Claude show as a GitHub Contributor; the author email stays unlinked on purpose).
 - The Instance trailer doubles as clean-room evidence: it records which isolated side authored each commit.
-- Pushes still ride the SSH alias `git@github_t00mietum:...` (transport only). Keep t00mietum out of history/content - unchanged.
+- Pushes still ride the SSH alias `git@github_t00mietum:...` (transport only). Keep the owner's personal account out of history/content - unchanged.
 
 ## Build / run
 
@@ -32,7 +32,7 @@ This is a clean-room GPLv2+ reimplementation of ZFS. This context is the IMPLEME
 
 ## Non-obvious gotchas (all hit during bring-up - don't regress these)
 
-- Remote is the SSH alias `git@github_t00mietum:...`, not literal `github.com`. Commit author is Claude (see Attribution above; was t00mietum before 2026-07-19); gh is authed as t00mietum - keep t00mietum out of history/content.
+- Remote is the SSH alias `git@github_t00mietum:...`, not literal `github.com`. Commit author is Claude (see Attribution above; was t00mietum before 2026-07-19); gh is authed under the owner's personal account - keep that account out of history/content.
 - rustfmt `hard_tabs = true` keeps tab indentation rustfmt-canonical; don't remove it.
 
 ## Tuning
