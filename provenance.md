@@ -11,6 +11,10 @@ zfs-gpl is an original work. It shares no source code with OpenZFS, illumos, Ope
 - Behavioral observation: creating pools with a stock OpenZFS install and observing the resulting on-disk bytes and import/read behavior as a black box (an external oracle), without reading OpenZFS source.
 - For format features introduced after 2006 that are documented only in CDDL source (feature flags, native encryption, dRAID, zstd, log spacemaps, large dnodes and blocks), functional specifications produced under the clean-room process in [`cleanroom.md`](cleanroom.md): a separate role studies the source and writes fact-only specifications; this implementation is written from those specifications, never from the source.
 
+## Authorship
+
+The code is written by Claude (Anthropic's LLM-based coding agent), operating as the implementation side of the clean-room process, under the direction of the human maintainer, who contributes documentation and project management rather than code. This is stated openly because the record is stronger for it: from 2026-07-19 forward, every Claude commit is authored as `Claude <claude@bubblesnet.com>` and carries trailers recording the exact model, effort setting, and isolated instance that produced it (`Model:` / `Effort:` / `Instance:`). The `Instance:` trailer distinguishes the implementation side from the spec side - part of the evidence that the clean-room roles are distinct actors. Commits before that date were authored under the maintainer's project identity; history is not rewritten.
+
 ## What is deliberately absent
 
 - No file copied or adapted from any CDDL-licensed tree.
