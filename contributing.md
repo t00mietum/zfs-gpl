@@ -105,6 +105,9 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/t00mie
 
 ## Style
 
-- Rust is rustfmt-canonical; a formatting hook runs on staged `.rs`.
+The full reference is [`style-guide.md`](style-guide.md). In short:
+
+- Rust is rustfmt-canonical (`hard_tabs = true`); a formatting hook runs on staged `.rs`, and code must pass `clippy::pedantic`.
 - Comments explain why, not what. ASCII only. No banner dividers.
+- Prose never hard-wraps; short sentences and nested bullets over run-ons.
 - Commit messages are short and factual.
