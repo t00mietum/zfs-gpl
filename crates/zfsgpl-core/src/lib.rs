@@ -5,4 +5,10 @@
 
 #![forbid(unsafe_code)]
 
+pub mod device;
+pub mod vdev;
+
+#[cfg(test)]
+mod test_support;
+
 pub use zfsgpl_ondisk as ondisk;

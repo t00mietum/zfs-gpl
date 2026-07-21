@@ -135,11 +135,15 @@ pub fn select_active(candidates: &[Uberblock]) -> Option<usize> {
 	candidates
 		.iter()
 		.enumerate()
-		.max_by_key(|(_, uberblock)| rank(uberblock))
+		.max_by_key(|(_, uberblock)| selection_rank(uberblock))
 		.map(|(i, _)| i)
 }
 
-fn rank(uberblock: &Uberblock) -> (u64, u64, u16) {
+/// Ordering key for active-uberblock selection: `(txg, timestamp, mmp sequence)`
+/// compared lexicographically, highest wins. Exposed so a scanner ranking its
+/// own candidate set applies the same tie-breaks. (spec 8.2, 8.3)
+#[must_use]
+pub fn selection_rank(uberblock: &Uberblock) -> (u64, u64, u16) {
 	(
 		uberblock.txg,
 		uberblock.timestamp,
