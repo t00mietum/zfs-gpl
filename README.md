@@ -16,25 +16,10 @@
 [![made-with-rust](https://img.shields.io/badge/Made%20with-Rust-1f425f.svg)](https://www.rust-lang.org/)
 ![Go](https://img.shields.io/badge/Go-00ADD8?logo=go&logoColor=white)
 ![Made with](https://img.shields.io/badge/Made%20with-C%2B%2B-brightgreen?style=plastic)
-![Made with](https://img.shields.io/badge/Made%20with-Unreal%20Engine-critical?style=plastic)
-[![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-1f425f.svg)](https://www.javascript.com)
-![License: GPL v2](https://img.shields.io/badge/License-GPLv2-blue.svg)
-[![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
-![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 ![Lifecycle: Alpha](https://img.shields.io/badge/Lifecycle-Alpha-orange)
 ![Lifecycle: Beta](https://img.shields.io/badge/Lifecycle-Beta-yellow)
 ![Lifecycle: RC](https://img.shields.io/badge/Lifecycle-RC-blue)
 ![Lifecycle: Stable](https://img.shields.io/badge/Lifecycle-Stable-brightgreen)
-![Lifecycle: Deprecated](https://img.shields.io/badge/Lifecycle-Deprecated-red)
-![Status: Deprecated](https://img.shields.io/badge/Status-Deprecated-orange)
-![Status: Archived](https://img.shields.io/badge/Status-Archived-lightgrey)
-![Lifecycle: EOL](https://img.shields.io/badge/Lifecycle-EOL-lightgrey)
-![Coverage](https://img.shields.io/badge/Coverage-25%25-red)
-![Coverage](https://img.shields.io/badge/Coverage-50%25-orange)
-![Coverage](https://img.shields.io/badge/Coverage-75%25-yellow)
-![Coverage](https://img.shields.io/badge/Coverage-90%25-brightgreen)
 ![Status: Passing](https://img.shields.io/badge/Status-Passing-brightgreen)
 ![Status: Failing](https://img.shields.io/badge/Status-Failing-red)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/t00mietum?logo=GitHub%20Sponsors&style=social)](https://github.com/sponsors/t00mietum)
@@ -43,7 +28,13 @@
 <!-- TOC ignore:true -->
 # ZFS-GPL
 
-An independent, clean-room reimplementation of the ZFS filesystem in Rust, licensed **GPL-2.0-or-later**. It reads and writes the same on-disk format as OpenZFS, so the two can coexist on one machine, while shedding some of OpenZFS's design constraints.
+An independent, clean-room reimplementation of the ZFS filesystem in Rust, licensed **GPL-2.0-or-later**.
+
+It reads and writes the same on-disk format as OpenZFS, so the two can coexist on one machine.
+
+Sheds the original Solaris design constraints - including the Solaris shim layer, a device discovery process that makes little sense for Linux (or arguably even for Solaris in a modern production environment), and non-native caching tied to the filesystem module.
+
+And most importantly - it's cross-platform by design. Linux, BSD, Solaris, Windows.
 
 <!-- TOC ignore:true -->
 ## Table of contents
@@ -95,6 +86,7 @@ Features we currently believe are clear - foundational format mechanics whose re
 - Pooled storage across multiple devices, with dynamic striping.
 - End-to-end data-integrity checksums (the hash-tree structure over blocks).
 - Byte-order (endianness) adaptivity.
+- ZFS's recent block-cloning implementation of FICLONERANGE (OpenZFS 2.2+)
 
 Features we treat as possibly still covered - implemented as stubs until confirmed clear or expired:
 
@@ -107,7 +99,9 @@ Features we treat as possibly still covered - implemented as stubs until confirm
 - Native encryption.
 - Secure erase within a copy-on-write file system.
 
-This list is intentionally high-level and names no patents; the detailed analysis is kept in private working notes and will be superseded by counsel's formal opinion. The point of this section is the commitment, not the citations.
+These lists may be superseded (and almost certainly further fleshed-out) by counsel's formal opinion. The point of this section is the commitment, not the citations.
+
+> *This is not legal advice; the clean-room and patent notes in this repo are an engineering process, pending review by counsel.*
 
 ## Features
 
@@ -138,5 +132,3 @@ The approved format specifications ([`zfs-gpl-spec`](https://github.com/t00mietu
 
 > Copyright © 2026 t00mietum (ID: f⍒Ê🝅ĜᛎỹqFẅ▿⍢Ŷ‡ʬẼᛏ🜣)<br>
 > Licensed under [GNU GPL v2 Or Later License](https://spdx.org/licenses/GPL-2.0-or-later.html) license. No warranty. See [`license.md`](license.md).
-
-This is not legal advice; the clean-room and patent notes in this repo are an engineering process, pending review by counsel.
