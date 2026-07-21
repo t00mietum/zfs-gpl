@@ -9,6 +9,11 @@ license = "GPL-2.0-or-later"
 repository = "https://github.com/t00mietum/zfs-gpl"
 rust-version = "1.90"
 
+# thiserror in the library crates, anyhow at the application edge (see project/design.md).
+[workspace.dependencies]
+thiserror = "2"
+anyhow = "1"
+
 [workspace.lints.rust]
 unsafe_op_in_unsafe_fn = "warn"
 

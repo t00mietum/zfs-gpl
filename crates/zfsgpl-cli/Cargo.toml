@@ -17,3 +17,4 @@ workspace = true
 
 [dependencies]
 zfsgpl-core = { path = "../zfsgpl-core" }
+anyhow = { workspace = true }

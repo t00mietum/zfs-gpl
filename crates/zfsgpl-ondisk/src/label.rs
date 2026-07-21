@@ -37,15 +37,16 @@ pub const BOOT_REGION_OFFSET: u64 = 0x80000;
 pub const BOOT_REGION_SIZE: u64 = 7 << 19;
 
 /// Device byte offset of label `label_idx` (0..3) on a device of `device_size` bytes. (spec 2.2)
-/// `device_size` is treated as a whole multiple of `LABEL_SIZE`; any trailing
-/// remainder is unused.
+/// Any trailing partial-label remainder is unused, so the rear pair is anchored
+/// to the last whole `LABEL_SIZE` boundary at or below `device_size`.
 #[must_use]
 pub fn label_offset(label_idx: u32, device_size: u64) -> u64 {
 	debug_assert!(label_idx < LABEL_COUNT);
 	if label_idx < 2 {
 		u64::from(label_idx) * LABEL_SIZE
 	} else {
-		device_size - u64::from(LABEL_COUNT - label_idx) * LABEL_SIZE
+		let usable = device_size - device_size % LABEL_SIZE;
+		usable - u64::from(LABEL_COUNT - label_idx) * LABEL_SIZE
 	}
 }
 
@@ -88,6 +89,15 @@ mod tests {
 		assert_eq!(label_offset(1, device_size), LABEL_SIZE);
 		assert_eq!(label_offset(2, device_size), device_size - 2 * LABEL_SIZE);
 		assert_eq!(label_offset(3, device_size), device_size - LABEL_SIZE);
+	}
+
+	#[test]
+	fn rear_labels_ignore_a_trailing_partial_label() {
+		// A device sized to 100 labels plus a 7 KiB tail: the rear pair anchors
+		// to the last whole label, not into the unusable remainder.
+		let device_size = 100 * LABEL_SIZE + 7 * 1024;
+		assert_eq!(label_offset(2, device_size), 98 * LABEL_SIZE);
+		assert_eq!(label_offset(3, device_size), 99 * LABEL_SIZE);
 	}
 
 	#[test]

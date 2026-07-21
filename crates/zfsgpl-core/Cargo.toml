@@ -12,3 +12,4 @@ workspace = true
 
 [dependencies]
 zfsgpl-ondisk = { path = "../zfsgpl-ondisk" }
+thiserror = { workspace = true }
