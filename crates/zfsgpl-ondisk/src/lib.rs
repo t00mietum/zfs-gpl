@@ -6,7 +6,9 @@
 
 #![forbid(unsafe_code)]
 
+pub mod checksum;
 pub mod label;
+pub mod sha256;
 pub mod uberblock;
 
 pub use uberblock::{ByteOrder, Uberblock, UBERBLOCK_MAGIC};

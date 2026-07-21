@@ -83,12 +83,12 @@ In each section, items are listed approximately from newest to oldest.
 
 ### Phase 2 - read the core format
 
-- 🛠️ Vdev labels: geometry/region math done (`label.rs`); nvlist (XDR) parse and checksum validation still open
+- 🛠️ Vdev labels: geometry/region math done (`label.rs`), self-checksum validation done (`checksum.rs`); nvlist (XDR) parse still open
 - 🛠️ Uberblock: parse + endianness + active-uberblock ranking done (`uberblock.rs`); device I/O layer now scans real slots
 	- ✅ Device I/O seam: `BlockDevice` trait + `FileDevice` (image or raw device), portable positioned reads (`device.rs`)
 	- ✅ Leaf-vdev scan: read all readable labels, discover uberblock candidates at 1 KiB stride (ashift-independent), rank to the active one (`vdev.rs`); wired to `zgpl scan <path>`
-	- 🔘 Self-checksum gate (spec 8.1 step 3) not yet applied to candidates - blocked on the item below
-- 🔘 Label/uberblock self-checksum: offset-anchored SHA-256 (spec 6). Note: digest-to-word packing needs an interop fixture before claiming OpenZFS compat
+	- ✅ Self-checksum gate (spec 8.1 step 3): each candidate must self-checksum against its device offset; tries all slot sizes so it stays ashift-independent
+- ✅ Label/uberblock self-checksum: offset-anchored SHA-256 (spec 6), digest-to-word packing per spec 02. Own SHA-256 (`sha256.rs`, FIPS 180-4), no crypto dep; verified against FIPS + spec-02 packing vectors
 - 🔘 Block pointers and DVAs: decode, follow, verify checksums (fletcher4, SHA-256)
 - 🔘 DMU: dnodes and object sets
 - 🔘 ZAP: micro and fat
