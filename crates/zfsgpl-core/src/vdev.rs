@@ -13,12 +13,12 @@
 //! without first parsing the config nvlist to learn the exact slot size. Padding
 //! and larger-slot interiors simply fail the magic check.
 //!
-//! Not yet wired: the spec 8.1 step-3 self-checksum gate (offset-anchored
-//! SHA-256). Its digest-to-word packing needs an interop fixture before we can
-//! claim `OpenZFS` compatibility, so a scan currently admits every structurally
-//! valid slot. `UberblockCandidate::device_offset` is retained precisely so that
-//! gate can be dropped in later without re-scanning.
+//! Each magic hit then passes the spec 8.1 step-3 self-checksum gate: the
+//! offset-anchored SHA-256 over the whole slot (spec 6.3). The slot size is
+//! `2^clamp(ashift,10,13)`, still unknown at scan time, so the gate tries each
+//! possible size - only the true one validates, keeping the scan ashift-free.
 
+use zfsgpl_ondisk::checksum;
 use zfsgpl_ondisk::label;
 use zfsgpl_ondisk::uberblock::{selection_rank, Uberblock, UBERBLOCK_FIXED_SIZE};
 
@@ -27,14 +27,18 @@ use crate::device::{BlockDevice, DeviceError};
 /// Scan stride: the minimum uberblock slot size, 1 KiB (spec 4, 2006 baseline).
 const SCAN_STRIDE: usize = 1024;
 
+/// The possible uberblock slot sizes, `2^clamp(ashift,10,13)` (spec 4). The
+/// self-checksum gate tries each because the true `ashift` is not yet known.
+const SLOT_SIZES: [usize; 4] = [1024, 2048, 4096, 8192];
+
 /// Uberblock ring length as a `usize` for buffer/index math, kept in lockstep
 /// with the u64 spec constant used for device-offset arithmetic.
 const RING_LEN: usize = 128 * 1024;
 const _: () = assert!(RING_LEN as u64 == label::UBERBLOCK_RING_SIZE);
 
 /// One uberblock found on the device, with where it came from. `device_offset`
-/// is the absolute byte offset of the slot - the anchor the eventual
-/// self-checksum verification (spec 6.3) is computed against.
+/// is the absolute byte offset of the slot - the anchor its self-checksum was
+/// verified against (spec 6.3).
 #[derive(Clone, Debug)]
 pub struct UberblockCandidate {
 	pub label_idx: u32,
@@ -99,10 +103,16 @@ pub fn scan<D: BlockDevice>(device: &D) -> Result<VdevScan, DeviceError> {
 			let Some(uberblock) = Uberblock::parse(slot) else {
 				continue;
 			};
+			let within = slot_index * SCAN_STRIDE;
+			let device_offset = ring_off + within as u64;
+			// spec 8.1 step 3: the slot must self-checksum against its offset.
+			if !checksum_passes(&ring, within, device_offset) {
+				continue;
+			}
 			candidates.push(UberblockCandidate {
 				label_idx,
 				slot_index: slot_index as u64,
-				device_offset: ring_off + slot_index as u64 * SCAN_STRIDE as u64,
+				device_offset,
 				uberblock,
 			});
 		}
@@ -115,6 +125,18 @@ pub fn scan<D: BlockDevice>(device: &D) -> Result<VdevScan, DeviceError> {
 		.map(|(i, _)| i);
 
 	Ok(VdevScan { candidates, active })
+}
+
+/// The self-checksum validity gate (spec 8.1 step 3). The uberblock checksum
+/// covers its whole slot, sized `2^clamp(ashift,10,13)` - unknown here - so try
+/// each candidate size. The offset-anchored SHA-256 validates for only the true
+/// size (a wrong size hashes the wrong byte range), so trying all four keeps the
+/// scan ashift-independent.
+fn checksum_passes(ring: &[u8], within: usize, device_offset: u64) -> bool {
+	SLOT_SIZES.iter().any(|&slot_size| {
+		ring.get(within..within + slot_size)
+			.is_some_and(|area| checksum::verify(area, device_offset))
+	})
 }
 
 #[cfg(test)]
@@ -137,7 +159,9 @@ mod tests {
 		}
 	}
 
-	/// Plant a native-order uberblock at (label offset, slot) with a given txg.
+	/// Plant a native-order uberblock at (label offset, slot) with a given txg,
+	/// then seal it with a valid 1 KiB-slot self-checksum trailer anchored to its
+	/// device offset, so it clears the scan's validity gate.
 	fn plant(dev: &mut MemDevice, label_off: u64, slot_index: u64, txg: u64, timestamp: u64) {
 		let base = usize::try_from(
 			label_off + label::UBERBLOCK_RING_OFFSET + slot_index * SCAN_STRIDE as u64,
@@ -148,6 +172,7 @@ mod tests {
 		dev.bytes[base + OFF_TXG..base + OFF_TXG + 8].copy_from_slice(&txg.to_le_bytes());
 		dev.bytes[base + OFF_TIMESTAMP..base + OFF_TIMESTAMP + 8]
 			.copy_from_slice(&timestamp.to_le_bytes());
+		checksum::write_trailer(&mut dev.bytes[base..base + SCAN_STRIDE], base as u64);
 	}
 
 	#[test]
@@ -206,5 +231,34 @@ mod tests {
 		let scan = scan(&blank_device(8)).unwrap();
 		assert!(scan.candidates.is_empty());
 		assert!(scan.active().is_none());
+	}
+
+	#[test]
+	fn magic_without_valid_checksum_is_rejected() {
+		// A slot with correct magic but no self-checksum trailer must not pass
+		// the spec 8.1 gate, even though it parses structurally.
+		let mut dev = blank_device(8);
+		let base = usize::try_from(label::UBERBLOCK_RING_OFFSET).unwrap();
+		dev.bytes[base + OFF_MAGIC..base + OFF_MAGIC + 8]
+			.copy_from_slice(&UBERBLOCK_MAGIC.to_le_bytes());
+		dev.bytes[base + OFF_TXG..base + OFF_TXG + 8].copy_from_slice(&99u64.to_le_bytes());
+		let scan = scan(&dev).unwrap();
+		assert!(scan.candidates.is_empty());
+	}
+
+	#[test]
+	fn finds_a_larger_slot_uberblock() {
+		// An ashift=12 pool uses 4 KiB slots; the checksum covers the whole slot.
+		// The gate must discover it by trying the larger size, not just 1 KiB.
+		let mut dev = blank_device(8);
+		let base = usize::try_from(label::UBERBLOCK_RING_OFFSET).unwrap();
+		let slot_size = 4096usize;
+		dev.bytes[base + OFF_MAGIC..base + OFF_MAGIC + 8]
+			.copy_from_slice(&UBERBLOCK_MAGIC.to_le_bytes());
+		dev.bytes[base + OFF_TXG..base + OFF_TXG + 8].copy_from_slice(&7u64.to_le_bytes());
+		checksum::write_trailer(&mut dev.bytes[base..base + slot_size], base as u64);
+		let scan = scan(&dev).unwrap();
+		assert_eq!(scan.candidates.len(), 1);
+		assert_eq!(scan.active().unwrap().uberblock.txg, 7);
 	}
 }
