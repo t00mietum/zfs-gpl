@@ -36,31 +36,35 @@ pub const CHECKSUM_TRAILER_SIZE: u64 = 40;
 pub const BOOT_REGION_OFFSET: u64 = 0x80000;
 pub const BOOT_REGION_SIZE: u64 = 7 << 19;
 
-/// Device byte offset of label `l` (0..3) on a device of `psize` bytes. (spec 2.2)
-/// `psize` is treated as a whole multiple of `LABEL_SIZE`; any trailing
+/// Device byte offset of label `label_idx` (0..3) on a device of `device_size` bytes. (spec 2.2)
+/// `device_size` is treated as a whole multiple of `LABEL_SIZE`; any trailing
 /// remainder is unused.
-pub fn label_offset(l: u32, psize: u64) -> u64 {
-	debug_assert!(l < LABEL_COUNT);
-	if l < 2 {
-		u64::from(l) * LABEL_SIZE
+#[must_use]
+pub fn label_offset(label_idx: u32, device_size: u64) -> u64 {
+	debug_assert!(label_idx < LABEL_COUNT);
+	if label_idx < 2 {
+		u64::from(label_idx) * LABEL_SIZE
 	} else {
-		psize - u64::from(LABEL_COUNT - l) * LABEL_SIZE
+		device_size - u64::from(LABEL_COUNT - label_idx) * LABEL_SIZE
 	}
 }
 
 /// Uberblock slot size = 2^clamp(ashift,10,13), i.e. 1 KiB..8 KiB. (spec 4)
+#[must_use]
 pub fn uberblock_slot_size(ashift: u32) -> u64 {
 	1u64 << ashift.clamp(10, 13)
 }
 
 /// Number of uberblock slots in one label's ring for a given ashift. (spec 4)
+#[must_use]
 pub fn uberblock_slot_count(ashift: u32) -> u64 {
 	UBERBLOCK_RING_SIZE / uberblock_slot_size(ashift)
 }
 
-/// Offset within a label of uberblock slot `n`. (spec 4)
-pub fn uberblock_slot_offset(n: u64, ashift: u32) -> u64 {
-	UBERBLOCK_RING_OFFSET + n * uberblock_slot_size(ashift)
+/// Offset within a label of the uberblock slot at index `slot`. (spec 4)
+#[must_use]
+pub fn uberblock_slot_offset(slot: u64, ashift: u32) -> u64 {
+	UBERBLOCK_RING_OFFSET + slot * uberblock_slot_size(ashift)
 }
 
 #[cfg(test)]
@@ -79,11 +83,11 @@ mod tests {
 
 	#[test]
 	fn front_and_rear_label_positions() {
-		let psize = 100 * LABEL_SIZE; // a tidy whole number of labels
-		assert_eq!(label_offset(0, psize), 0);
-		assert_eq!(label_offset(1, psize), LABEL_SIZE);
-		assert_eq!(label_offset(2, psize), psize - 2 * LABEL_SIZE);
-		assert_eq!(label_offset(3, psize), psize - LABEL_SIZE);
+		let device_size = 100 * LABEL_SIZE; // a tidy whole number of labels
+		assert_eq!(label_offset(0, device_size), 0);
+		assert_eq!(label_offset(1, device_size), LABEL_SIZE);
+		assert_eq!(label_offset(2, device_size), device_size - 2 * LABEL_SIZE);
+		assert_eq!(label_offset(3, device_size), device_size - LABEL_SIZE);
 	}
 
 	#[test]

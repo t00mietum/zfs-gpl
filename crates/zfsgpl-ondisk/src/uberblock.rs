@@ -68,6 +68,7 @@ impl Uberblock {
 	/// is too small or the magic does not identify a valid uberblock. This is
 	/// the structural half of the validity gate; the caller pairs it with the
 	/// self-checksum check before trusting a candidate. (spec 5, 7, 8.1)
+	#[must_use]
 	pub fn parse(slot: &[u8]) -> Option<Uberblock> {
 		if slot.len() < UBERBLOCK_FIXED_SIZE {
 			return None;
@@ -77,8 +78,8 @@ impl Uberblock {
 			UBERBLOCK_MAGIC_BSWAP => ByteOrder::Swapped,
 			_ => return None,
 		};
-		let field = |off: usize| -> u64 {
-			let raw = read_u64_le(slot, off);
+		let field = |offset: usize| -> u64 {
+			let raw = read_u64_le(slot, offset);
 			match byte_order {
 				ByteOrder::Native => raw,
 				ByteOrder::Swapped => raw.swap_bytes(),
@@ -103,11 +104,13 @@ impl Uberblock {
 	}
 
 	/// Whether this uberblock carries valid MMP (multi-host) metadata. (spec 5, 6.4)
+	#[must_use]
 	pub fn mmp_valid(&self) -> bool {
 		self.mmp_magic == MMP_MAGIC
 	}
 
 	/// MMP sequence number, if present and flagged valid by `mmp_config`. (spec 6.4)
+	#[must_use]
 	pub fn mmp_sequence(&self) -> Option<u16> {
 		const SEQ_VALID_BIT: u64 = 0x02;
 		if !self.mmp_valid() || self.mmp_config & SEQ_VALID_BIT == 0 {
@@ -117,6 +120,7 @@ impl Uberblock {
 	}
 
 	/// Whether this uberblock is a saved pool checkpoint. (spec 5, 8.4)
+	#[must_use]
 	pub fn is_checkpoint(&self) -> bool {
 		self.checkpoint_txg != 0
 	}
@@ -126,21 +130,26 @@ impl Uberblock {
 /// `txg`, then higher `timestamp`, then higher MMP sequence; any remaining tie
 /// is acceptable. Returns the winner's index, or `None` for an empty slice.
 /// Callers pass only candidates that already cleared the validity gate. (spec 8.2, 8.3)
+#[must_use]
 pub fn select_active(candidates: &[Uberblock]) -> Option<usize> {
 	candidates
 		.iter()
 		.enumerate()
-		.max_by_key(|(_, ub)| rank(ub))
+		.max_by_key(|(_, uberblock)| rank(uberblock))
 		.map(|(i, _)| i)
 }
 
-fn rank(ub: &Uberblock) -> (u64, u64, u16) {
-	(ub.txg, ub.timestamp, ub.mmp_sequence().unwrap_or(0))
+fn rank(uberblock: &Uberblock) -> (u64, u64, u16) {
+	(
+		uberblock.txg,
+		uberblock.timestamp,
+		uberblock.mmp_sequence().unwrap_or(0),
+	)
 }
 
-fn read_u64_le(buf: &[u8], off: usize) -> u64 {
+fn read_u64_le(buf: &[u8], offset: usize) -> u64 {
 	let mut bytes = [0u8; 8];
-	bytes.copy_from_slice(&buf[off..off + 8]);
+	bytes.copy_from_slice(&buf[offset..offset + 8]);
 	u64::from_le_bytes(bytes)
 }
 
@@ -158,10 +167,10 @@ mod tests {
 		slot[OFF_MAGIC..OFF_MAGIC + 8].copy_from_slice(&UBERBLOCK_MAGIC.to_le_bytes());
 		slot[OFF_TXG..OFF_TXG + 8].copy_from_slice(&42u64.to_le_bytes());
 		slot[OFF_TIMESTAMP..OFF_TIMESTAMP + 8].copy_from_slice(&1_000u64.to_le_bytes());
-		let ub = Uberblock::parse(&slot).unwrap();
-		assert_eq!(ub.byte_order, ByteOrder::Native);
-		assert_eq!(ub.txg, 42);
-		assert_eq!(ub.timestamp, 1_000);
+		let uberblock = Uberblock::parse(&slot).unwrap();
+		assert_eq!(uberblock.byte_order, ByteOrder::Native);
+		assert_eq!(uberblock.txg, 42);
+		assert_eq!(uberblock.timestamp, 1_000);
 	}
 
 	#[test]
@@ -170,9 +179,9 @@ mod tests {
 		let mut slot = blank_slot();
 		slot[OFF_MAGIC..OFF_MAGIC + 8].copy_from_slice(&UBERBLOCK_MAGIC.to_be_bytes());
 		slot[OFF_TXG..OFF_TXG + 8].copy_from_slice(&42u64.to_be_bytes());
-		let ub = Uberblock::parse(&slot).unwrap();
-		assert_eq!(ub.byte_order, ByteOrder::Swapped);
-		assert_eq!(ub.txg, 42);
+		let uberblock = Uberblock::parse(&slot).unwrap();
+		assert_eq!(uberblock.byte_order, ByteOrder::Swapped);
+		assert_eq!(uberblock.txg, 42);
 	}
 
 	#[test]
@@ -205,16 +214,16 @@ mod tests {
 
 	#[test]
 	fn mmp_sequence_needs_magic_and_valid_bit() {
-		let mut ub = Uberblock::parse(&{
+		let mut uberblock = Uberblock::parse(&{
 			let mut s = blank_slot();
 			s[OFF_MAGIC..OFF_MAGIC + 8].copy_from_slice(&UBERBLOCK_MAGIC.to_le_bytes());
 			s
 		})
 		.unwrap();
-		ub.mmp_magic = MMP_MAGIC;
-		ub.mmp_config = 0x02 | (7u64 << 32); // seq-valid bit set, sequence = 7
-		assert_eq!(ub.mmp_sequence(), Some(7));
-		ub.mmp_config = 7u64 << 32; // valid bit clear
-		assert_eq!(ub.mmp_sequence(), None);
+		uberblock.mmp_magic = MMP_MAGIC;
+		uberblock.mmp_config = 0x02 | (7u64 << 32); // seq-valid bit set, sequence = 7
+		assert_eq!(uberblock.mmp_sequence(), Some(7));
+		uberblock.mmp_config = 7u64 << 32; // valid bit clear
+		assert_eq!(uberblock.mmp_sequence(), None);
 	}
 }
