@@ -8,6 +8,7 @@
 
 pub mod checksum;
 pub mod label;
+pub mod nvlist;
 pub mod sha256;
 pub mod uberblock;
 
