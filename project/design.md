@@ -108,6 +108,32 @@ Phased roadmap and current status are in [`backlog.md`](backlog.md).
 
 Rust. Release profile favors small binary then speed (see the root `Cargo.toml`), per project priorities.
 
+### Rust paradigm and conventions
+
+Read this before writing any Rust in this repo - it is required startup reading (see `CLAUDE.md`). The style is deliberately narrow because a filesystem decodes untrusted, possibly-corrupt bytes and the top priorities are small binary then speed.
+
+Paradigm - data-oriented, boundary-validated, mostly-safe, sync-core:
+
+- Data-oriented, not object-oriented. Model the format as plain structs, enums, and free functions with pattern matching. Use enums for the format's closed sum types (block-pointer and DMU object types, checksum and compression algorithms); reserve traits for real substitution seams. Static dispatch over `dyn` - smaller and faster.
+- Parse, don't validate. Decode raw bytes into already-validated, strongly-typed structs at the I/O boundary; inland code only ever sees proven-valid types. Newtype the primitives (`Dva`, `BlockPointer`, `Txg`, `ObjsetId`) so a raw `u64` cannot be cross-wired into the wrong field.
+- Errors are values; never panic on disk input. `Result` at every decode boundary, a dedicated error enum, no `unwrap`/`expect`/indexing panics on bytes read from a device. `panic!` is only for violated internal invariants (programmer bugs). Corruption is an expected outcome, not an exception.
+- `no_std` + `alloc` in the core, from day one. `zfsgpl-ondisk` and as much of `zfsgpl-core` as possible stay `no_std`; push `std`/OS/syscalls out to the edges (`zfsgpl-cli`, the I/O layer). This keeps a future kernel-module target viable instead of a rewrite.
+- Unsafe is quarantined, not sprinkled. `#![forbid(unsafe_code)]` on the pure crates. Do not cast a buffer to a `#[repr(C)]` struct - the format is bi-endian and byte order is detected at runtime, so decode explicitly and endian-parameterized. Where `unsafe` is unavoidable (mmap, ioctls, FFI) isolate it in one small audited module with `// SAFETY:` comments.
+- Value semantics fit COW. ZFS is copy-on-write: transactions produce new block versions, not in-place mutation - identical to Rust's move/clone model. Blocks are addressed by on-disk pointers (values), so the block tree is load-on-demand-by-address, never an `Rc<RefCell<_>>` graph.
+- Sync core; async only at the I/O edge if ever. Decode is pure CPU. Keep the `Vdev`/`BlockDevice` I/O trait synchronous; do not bake `tokio` into the foundation (a kernel target makes async-Rust awkward).
+- Traits at the substitution seam only. The block-device/vdev backend (file, raw device, in-memory tmpfs fixture) is the main one; it is what lets the same core run under FUSE, a kernel shim, or the loopback test harness.
+
+Avoid these LLM-typical weaknesses - write it as an expert would:
+
+- No reflexive `.clone()` to appease the borrow checker. Restructure instead: borrow, split-borrow fields, scope the borrow, use indices, or `mem::take`/`mem::swap`. Clone only when the copy is genuinely needed and its cost is acceptable - never clone a data block or large buffer just to move past a borrow error. A deliberate clone should be obviously justified.
+- Never reach for `unsafe` to silence a borrow-checker fight. That is the inverse trap; restructure.
+- No needless allocation. Prefer `&str`/`&[u8]`/`Cow` and iterator chains over `to_owned`/`String`/`collect` round-trips. Allocation is binary size and speed, both top priorities here.
+- No premature abstraction. No generics, traits, or builders until a real second caller exists. Prefer the simplest concrete thing; generalize when the need is real, not anticipated.
+- No `Arc<Mutex<_>>`/interior-mutability reflex for sharing. Reach for ownership and borrows first.
+- No swallowed errors (`let _ =`, careless `.ok()`) and no `unwrap`/`expect` on runtime or disk data. Propagate with `?`.
+- Prefer std and idiomatic iterators over hand-rolled loops or a pulled-in crate for something std already does - but keep it readable, not clever. Every dependency is binary size and clean-room/supply-chain surface.
+- Default to tight visibility (`pub(crate)`), not reflexive `pub`.
+
 ### Configuration model
 
 Open design work.
