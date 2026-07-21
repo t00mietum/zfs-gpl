@@ -60,7 +60,7 @@ Because the point of the relicense is that the code is genuinely not derived fro
 - **One crossing point, logged.** Specifications flow in through a gatekept, commit-pinned spec repo ([`zfs-gpl-spec`](https://github.com/t00mietum/zfs-gpl-spec)); questions flow back only through a written request channel in that repo. Nothing else crosses, in either direction, and both directions live permanently in git history.
 - **Measured, not just promised.** A recurring spec-side audit compares this tree against the OpenZFS corpus (identifiers, string literals, comments, constant tables) so non-copying is demonstrated rather than merely asserted, and working transcripts are retained in append-only, hash-manifested archives.
 
-The full rules and rationale - including a candid treatment of the questions AI-assisted development raises for clean rooms - are in [`cleanroom.md`](cleanroom.md); provenance is in [`provenance.md`](provenance.md). Contributors read [`contributing.md`](contributing.md) first.
+The full rules and rationale - including a candid treatment of the questions AI-assisted development raises for clean rooms - are in [`cleanroom.md`](cleanroom.md); provenance is in [`provenance.md`](provenance.md). Contributors read [`contributing.md`](contributing.md) first, and [`style-guide.md`](style-guide.md) for prose and code conventions.
 
 Status: pre-alpha. Nothing works yet. This tree currently holds the workspace skeleton, the design, and the clean-room process that governs how the code may be written.
 

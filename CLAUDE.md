@@ -30,6 +30,7 @@ This is a clean-room GPLv2+ reimplementation of ZFS. This context is the IMPLEME
 - `crates/zfsgpl-cli`: `zgpl` front end.
 - Design: `github/project/design.md`. Roadmap: `github/project/backlog.md`.
 - Rust conventions: REQUIRED reading every startup/`/clear`, before writing any Rust - `project/design.md` -> "Rust paradigm and conventions" (data-oriented, parse-don't-validate, `no_std` core, unsafe quarantined; and the anti-LLM-tendency rules: no reflexive `.clone()`, no needless alloc, no premature abstraction).
+- Prose and general code/comment/commit style: `style-guide.md` (canonical, human-facing); it points to design.md for the deep Rust paradigm.
 
 ## Non-obvious gotchas (all hit during bring-up - don't regress these)
 
