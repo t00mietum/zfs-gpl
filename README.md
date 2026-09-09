@@ -130,5 +130,5 @@ The approved format specifications ([`zfs-gpl-spec`](https://github.com/t00mietu
 
 ## Copyright and license
 
-> Copyright © 2026 t00mietum (ID: f⍒Ê🝅ĜᛎỹqFẅ▿⍢Ŷ‡ʬẼᛏ🜣)<br>
+> Copyright © 2026 t00mietum (CryptogID: ปʬϝღถɔ4რఠΔթะ9ƾǝu)<br>
 > Licensed under [GNU GPL v2 Or Later License](https://spdx.org/licenses/GPL-2.0-or-later.html) license. No warranty. See [`license.md`](license.md).
